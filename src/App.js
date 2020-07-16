@@ -10,16 +10,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Button from "@material-ui/core/Button";
-import FolderIcon from "@material-ui/icons/Folder";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
 import DeleteIcon from "@material-ui/icons/DeleteSharp";
-import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
-import { MuiThemeProvider } from "@material-ui/styles";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import DoneAllIcon from "@material-ui/icons/DoneAll";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
@@ -48,14 +45,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(4, 0, 2),
   },
 }));
-
-function generate(element) {
-  return [0, 1, 2].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
 
 const App = () => {
   const classes = useStyles();
@@ -97,6 +86,7 @@ const App = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (todoText === "") return;
     const newTodo = {
       todo: todoText,
       active: true,
@@ -109,66 +99,66 @@ const App = () => {
   };
 
   const Actions = (
-    <Grid container spacing={2}>
-      <Grid item xs={6} md={6} style={{ marginTop: "10px" }}>
+    <Grid item xs={12} md={12} style={{ marginTop: "10px" }}>
+      <ButtonGroup
+        color="primary"
+        size="small"
+        aria-label="small contained button group"
+      >
         <Button
+          size="small"
           variant="contained"
-          color="primary"
           onClick={() => {
             setTodoList(
               getTodo().sort((a, b) => (a.active < b.active ? 1 : -1))
             );
             setChecked(!checked);
           }}
-          className={classes.button}
+          color="primary"
         >
           Show All
         </Button>
         <Button
+          size="small"
           variant="contained"
-          color="primary"
           onClick={() => {
-            setTodoList(getTodo().filter((item) => item.active == false));
+            setTodoList(getTodo().filter((item) => item.active === false));
             setChecked(!checked);
           }}
-          className={classes.button}
+          color="primary"
           startIcon={<DoneAllIcon />}
         >
-          Completed Tasks
+          Completed
         </Button>
-
         <Button
+          size="small"
           variant="contained"
-          color="secondary"
           onClick={() => {
-            setTodoList(getTodo().filter((item) => item.active == true));
+            setTodoList(getTodo().filter((item) => item.active === true));
             setChecked(!checked);
           }}
-          className={classes.button}
+          color="secondary"
           startIcon={<ErrorOutlineIcon />}
         >
           Pending
         </Button>
-      </Grid>
-      <Grid item xs={6} md={6} style={{ marginTop: "10px" }}>
-        {" "}
         <Button
+          size="small"
           variant="contained"
-          color="primary"
-          style={{ float: "right" }}
           onClick={() => {
             localStorage.removeItem("todo");
-            setTodoList(getTodo().filter((item) => item.active == false));
+            setTodoList(getTodo().filter((item) => item.active === false));
             setChecked(!checked);
           }}
-          className={classes.button}
+          color="secondary"
           startIcon={<ClearAllIcon />}
         >
           Clear All
         </Button>
-      </Grid>
+      </ButtonGroup>
     </Grid>
   );
+
   const Lists = (
     <List style={{ maxHeight: "300px", overflow: "auto" }} dense={false}>
       {todoList.map((item, i) => {
@@ -233,6 +223,7 @@ const App = () => {
               </FormControl>
             </form>
             <div>
+              {Actions}
               <Grid
                 item
                 xs={12}
@@ -246,7 +237,6 @@ const App = () => {
               </Grid>
             </div>
           </div>
-          {todoList.length > 0 ? Actions : ""}
         </Container>
       </div>
     </ThemeProvider>
